@@ -2,6 +2,13 @@
 name = "gen-table"
 version = "0.1.0"
 edition = "2021"
+authors = ["daheige"]
+description = "gen-table for mysql table convert to rust struct code"
+keywords = ["gen-table", "rs-gen", "mysql","gen-code","tbox"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/daheige/rs-tbox"
+documentation = "https://docs.rs/gen-table"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
