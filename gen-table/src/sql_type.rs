@@ -31,10 +31,10 @@ static MYSQL_TYPES: Lazy<HashMap<&str, &str>> = Lazy::new(|| {
         ("tinyblob", "String"),
         ("mediumblob", "String"),
         ("longblob", "String"),
-        ("date", "time::Duration"),
-        ("datetime", "time::Duration"),
-        ("timestamp", "time::Duration"),
-        ("time", "time::Duration"),
+        ("date", "Duration"),
+        ("datetime", "Duration"),
+        ("timestamp", "Duration"),
+        ("time", "Duration"),
         ("float", "f64"),
         ("double", "f64"),
         ("decimal", "f64"),
@@ -52,6 +52,14 @@ static MYSQL_TYPES: Lazy<HashMap<&str, &str>> = Lazy::new(|| {
 
 /// get rust type by mysql type
 pub fn get_type(t: &str) -> String {
-    let val = MYSQL_TYPES.get(t).expect("not found mysql type");
+    let val = MYSQL_TYPES
+        .get(t)
+        .expect(format!("not found mysql type:{}", t).as_str());
+
     val.to_string()
+}
+
+#[test]
+fn test_sql_type() {
+    println!("mysql bigint for rust type:{}", get_type("bigint"));
 }
