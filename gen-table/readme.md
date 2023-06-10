@@ -3,7 +3,14 @@
     which is easy for developers to use and automatically manage table structure generation.
 
 # install
+```shell
     cargo install gen-table
+```
+or
+```shell
+cargo install --git https://github.com/daheige/rs-tbox
+```
+
 # help
 ```
 gen-table -h
