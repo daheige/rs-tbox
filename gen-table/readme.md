@@ -1,5 +1,6 @@
 # gen-table
-    gen-table is a tool that teaches mysql table structures to generate rust struct code, which is easy for developers to use and automatically manage table structure generation.
+    gen-table is a tool that teaches mysql table structures to generate rust struct code,
+    which is easy for developers to use and automatically manage table structure generation.
 
 # install
     cargo install gen-table
