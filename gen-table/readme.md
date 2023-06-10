@@ -15,7 +15,7 @@ cargo install --git https://github.com/daheige/rs-tbox
 ```
 gen-table -h
 Hello, welcome to gen-table
-gen-table for mysql table structures convert rust code
+gen-table for mysql table structures convert into rust code
 
 Usage: gen-table [OPTIONS] --dsn <dsn> --table <table>
 
