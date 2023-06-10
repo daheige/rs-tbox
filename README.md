@@ -1,7 +1,7 @@
 # rs-tbox
 The tool chain developed by rust facilitates go+rust development and increases productivity.
 
-# existing tools
+# tools list
 - gen-table: gen-table is a tool that teaches mysql table structures to generate rust struct code
 
 # rust 1.70.x version publish
