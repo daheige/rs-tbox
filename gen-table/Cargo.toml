@@ -18,3 +18,4 @@ sqlx = { version = "0.6.3", features = [ "runtime-tokio-rustls" , "mysql","chron
 tokio = { version = "1.28.2", features = ["full"] }
 futures = "0.3.28"
 clap = "4.3.2"
+serde = { version = "1.0.164",features = ["derive"]}

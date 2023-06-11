@@ -260,7 +260,7 @@ impl Engine {
             .expect("create mod.rs failed");
 
         // gen table module header
-        file.write(format!("{}// gen code for {} table.\n\n", LICENSE_HEADER, table).as_bytes())
+        file.write(format!("{}// gen code for {} table.\n", LICENSE_HEADER, table).as_bytes())
             .expect("write content failed");
 
         let records = self
@@ -270,18 +270,18 @@ impl Engine {
 
         // import use std::time::Duration for time
         if self.check_import_duration(&records) {
-            file.write(format!("{}\n\n", "use std::time::Duration;").as_bytes())
+            file.write(format!("{}", "use std::time::Duration;\n").as_bytes())
                 .expect("import std::time::Duration failed");
         }
+        file.write(format!("{}", "use serde::{Deserialize, Serialize};\n\n").as_bytes())
+            .expect("import serde failed");
 
+        let tab_upper = table.to_uppercase();
         // gen table const name
         file.write(
             format!(
                 "// {}_TABLE for {} table\nconst {}_TABLE: &str = \"{}\";\n\n",
-                table.to_uppercase(),
-                table,
-                table.to_uppercase(),
-                table,
+                tab_upper, table, tab_upper, table,
             )
             .as_bytes(),
         )
@@ -290,14 +290,13 @@ impl Engine {
         // gen struct code
         // struct start
         let table_entity_name = camel_case(table);
-        file.write(
-            format!(
-                "// {}Entity for {} table\npub struct {}Entity {}\n",
-                table_entity_name, table, table_entity_name, "{"
-            )
-            .as_bytes(),
-        )
-        .expect("write content failed");
+        file.write(format!("// {}Entity for {} table\n", table_entity_name, table).as_bytes())
+            .expect("write content failed");
+
+        file.write(format!("{}", "#[derive(Debug, Default, Serialize, Deserialize)]\n").as_bytes())
+            .expect("gen struct derive failed");
+        file.write(format!("pub struct {}Entity {}\n", table_entity_name, "{").as_bytes())
+            .expect("write content failed");
 
         let no_null_fields = self.get_no_null_fields();
         for record in records {
@@ -310,13 +309,17 @@ impl Engine {
                 is_nullable = "NO".to_string();
             }
 
-            let mut row = format!("\tpub {}: {},\n", record.field, data_type);
+            let mut row = format!("\tpub {}: {},\n", record.field.to_lowercase(), data_type);
             if is_nullable.eq("YES") {
                 println!(
                     "current field:{} is null able,type:{}",
                     record.field, data_type
                 );
-                row = format!("\tpub {}: Option<{}>,\n", record.field, data_type);
+                row = format!(
+                    "\tpub {}: Option<{}>,\n",
+                    record.field.to_lowercase(),
+                    data_type
+                );
             }
 
             file.write(row.as_bytes()).expect("gen struct field failed");
