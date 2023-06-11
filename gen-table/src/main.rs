@@ -91,7 +91,6 @@ async fn main() -> Result<(), sqlx::Error> {
     );
 
     let tables: Vec<&str> = table.split(",").collect();
-    // fields are not allowed to be null
     let mut entry = engine::Engine::new(&dsn, &out_dir)
         .with_enable_tab_name(enable_table_name)
         .with_no_null_field(no_null_field)
