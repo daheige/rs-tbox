@@ -10,7 +10,7 @@ async fn main() -> Result<(), sqlx::Error> {
     let matches = Command::new("clap demo")
         .version("0.1.0")
         .author("gen-table by daheige")
-        .about("gen-table for mysql table structures convert rust code")
+        .about("gen-table for mysql table structures convert to rust code")
         .arg(
             Arg::new("dsn")
                 .short('d')
@@ -40,7 +40,7 @@ async fn main() -> Result<(), sqlx::Error> {
                 .long("enable_tab_name")
                 .help("whether to generate table_name method for struct")
                 .default_value("true")
-                .action(ArgAction::SetTrue),
+                .action(ArgAction::Set),
         )
         .arg(
             Arg::new("no_null_field")
@@ -48,7 +48,15 @@ async fn main() -> Result<(), sqlx::Error> {
                 .long("no_null")
                 .help("whether to allow a field of null type")
                 .default_value("false")
-                .action(ArgAction::SetTrue),
+                .action(ArgAction::Set),
+        )
+        .arg(
+            Arg::new("is_serde")
+                .short('s')
+                .long("serde")
+                .help("whether to use serde serialization and deserialization")
+                .default_value("false")
+                .action(ArgAction::Set),
         )
         .get_matches();
 
@@ -56,26 +64,49 @@ async fn main() -> Result<(), sqlx::Error> {
     let out_dir = matches
         .get_one::<String>("out_dir")
         .expect("out_dir invalid");
-    let enable_table_name = matches
-        .get_one::<bool>("enable_tab_name")
-        .expect("enable_tab_name invalid");
-    let no_null_field = matches
-        .get_one::<bool>("no_null_field")
-        .expect("enable_tab_name invalid");
     let table = matches.get_one::<String>("table").expect("table invalid");
 
+    let enable_table_name = str_to_bool(
+        matches
+            .get_one::<String>("enable_tab_name")
+            .expect("enable_tab_name invalid")
+            .as_str(),
+    );
+    let no_null_field = str_to_bool(
+        matches
+            .get_one::<String>("no_null_field")
+            .expect("no_null_field invalid")
+            .as_str(),
+    );
+    let is_serde = str_to_bool(
+        matches
+            .get_one::<String>("is_serde")
+            .expect("is_serde invalid")
+            .as_str(),
+    );
+
     println!(
-        "tables:{} enable_table_name:{} no_null_field:{}",
-        table, enable_table_name, no_null_field
+        "tables:{} enable_table_name:{} no_null_field:{} is_serde:{}",
+        table, enable_table_name, no_null_field, is_serde
     );
 
     let tables: Vec<&str> = table.split(",").collect();
     // fields are not allowed to be null
     let mut entry = engine::Engine::new(&dsn, &out_dir)
-        .with_enable_tab_name(*enable_table_name)
-        .with_no_null_field(*no_null_field);
-
+        .with_enable_tab_name(enable_table_name)
+        .with_no_null_field(no_null_field)
+        .with_serde(is_serde);
     entry.gen_code(tables).await;
 
     Ok(())
+}
+
+fn str_to_bool(s: &str) -> bool {
+    let v = if s.to_lowercase().eq("true") {
+        true
+    } else {
+        false
+    };
+
+    v
 }

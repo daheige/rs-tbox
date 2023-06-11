@@ -24,6 +24,7 @@ pub struct Engine {
     enable_table_name_fn: bool, // whether to generate table_name method for struct,default:true
     no_null_field: bool,        // whether to allow a field of null type,default:false
     out_dir: String,            // rust file out_dir,default: src/model
+    is_serde: bool,             // whether to use serder serialization and deserialization
 }
 
 #[derive(Debug, Default)]
@@ -96,6 +97,11 @@ impl Engine {
 
     pub fn with_no_null_field(mut self, no_null_field: bool) -> Self {
         self.no_null_field = no_null_field;
+        self
+    }
+
+    pub fn with_serde(mut self, is_serde: bool) -> Self {
+        self.is_serde = is_serde;
         self
     }
 
@@ -273,8 +279,11 @@ impl Engine {
             file.write(format!("{}", "use std::time::Duration;\n").as_bytes())
                 .expect("import std::time::Duration failed");
         }
-        file.write(format!("{}", "use serde::{Deserialize, Serialize};\n\n").as_bytes())
-            .expect("import serde failed");
+
+        if self.is_serde {
+            file.write(format!("{}", "use serde::{Deserialize, Serialize};\n\n").as_bytes())
+                .expect("import serde failed");
+        }
 
         let tab_upper = table.to_uppercase();
         // gen table const name
@@ -293,7 +302,12 @@ impl Engine {
         file.write(format!("// {}Entity for {} table\n", table_entity_name, table).as_bytes())
             .expect("write content failed");
 
-        file.write(format!("{}", "#[derive(Debug, Default, Serialize, Deserialize)]\n").as_bytes())
+        let mut derive_block = format!("{}", "#[derive(Debug, Default)]\n");
+        if self.is_serde {
+            derive_block = format!("{}", "#[derive(Debug, Default, Serialize, Deserialize)]\n");
+        }
+
+        file.write(derive_block.as_bytes())
             .expect("gen struct derive failed");
         file.write(format!("pub struct {}Entity {}\n", table_entity_name, "{").as_bytes())
             .expect("write content failed");
