@@ -1,6 +1,6 @@
 [package]
 name = "gen-table"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["daheige"]
 description = "gen-table for mysql table convert to rust struct code"

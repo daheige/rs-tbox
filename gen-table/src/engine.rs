@@ -36,7 +36,7 @@ pub struct ColumnEntry {
     pub field_key: String,
     pub order_by: u64,
     pub is_nullable: String,
-    pub max_length: Option<u64>,
+    pub max_length: Option<i64>,
     pub numeric_prec: Option<u64>,
     pub numeric_scale: Option<u64>,
     pub extra: String,
