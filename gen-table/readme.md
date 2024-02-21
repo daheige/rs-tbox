@@ -144,8 +144,8 @@ When the code is generated, you need to add the following to your Cargo.toml:
 (For the serde version, choose the corresponding version according to your project)
 
 ```rust
-serde = { version = "1.0.164",features = ["derive"]}
-serde_json = "1.0.96"
+serde = { version = "1.0.196",features = ["derive"]}
+serde_json = "1.0.114"
 ```
 serde_json is only used when doing json serialization, and is generally not used.
 I sincerely hope that the above content will be helpful to you,Thank you.
